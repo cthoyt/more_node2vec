@@ -11,7 +11,7 @@ import pickle
 from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
-from typing import ClassVar, Type, Union
+from typing import ClassVar, Optional, Type, Union
 
 import click
 import networkx as nx
@@ -73,7 +73,15 @@ class Model:
         """Get the model from a :class:`nodevectors.Node2Vec` instance."""
         return Model(wv=node2vec.model.wv)
 
-    def save(self, directory: Union[str, Path], save_dict: bool = False) -> None:
+    def save(
+        self,
+        directory: Union[str, Path],
+        *,
+        vector_name: Optional[str] = None,
+        vocab_name: Optional[str] = None,
+        dict_name: Optional[str] = None,
+        save_dict: bool = False,
+    ) -> None:
         """Save the model to the given directory."""
         if isinstance(directory, str):
             directory = Path(directory)
@@ -81,11 +89,11 @@ class Model:
         directory.mkdir(parents=True, exist_ok=True)
         save_tabbed_word2vec_format(
             wv=self.wv,
-            vectors_path=directory / self.vector_name,
-            vocab_path=directory / self.vocab_name,
+            vectors_path=directory.joinpath(vector_name or self.vector_name),
+            vocab_path=directory.joinpath(vocab_name or self.vocab_name),
         )
         if save_dict:
-            with directory.joinpath(self.dict_name).open("wb") as file:
+            with directory.joinpath(dict_name or self.dict_name).open("wb") as file:
                 pickle.dump(self.as_dict(), file)
 
     @classmethod
