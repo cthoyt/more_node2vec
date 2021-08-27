@@ -10,17 +10,15 @@ import gzip
 from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
-from typing import ClassVar, TYPE_CHECKING, Type, Union
+from typing import ClassVar, Type, Union
 
 import click
 import networkx as nx
 import numpy as np
 import pandas as pd
+from gensim.models.keyedvectors import Vocab, Word2VecKeyedVectors
 from nodevectors import Node2Vec
 from sklearn.base import BaseEstimator
-
-if TYPE_CHECKING:
-    from gensim.models.keyedvectors import Word2VecKeyedVectors
 
 __all__ = [
     "echo",
@@ -43,7 +41,7 @@ class Model:
     vector_name: ClassVar[str] = "embeddings.tsv.gz"
     vocab_name: ClassVar[str] = "vocab.tsv.gz"
 
-    wv: "Word2VecKeyedVectors"
+    wv: Word2VecKeyedVectors
 
     @property
     def vocab(self):
@@ -118,10 +116,8 @@ class Model:
 
 def load_tabbed_word2vec_format(
     vectors_path: Union[str, Path], vocab_path: Union[str, Path], dtype=np.float64
-) -> "Word2VecKeyedVectors":
+) -> Word2VecKeyedVectors:
     """Load the input-hidden weight matrix from the original C word2vec-tool format."""
-    from gensim.models.keyedvectors import Vocab, Word2VecKeyedVectors
-
     with reader(vectors_path) as vector_reader, reader(vocab_path) as vocab_reader:
         vector_header = next(vector_reader)
         try:
@@ -158,7 +154,7 @@ def load_tabbed_word2vec_format(
 
 def save_tabbed_word2vec_format(
     *,
-    wv: "Word2VecKeyedVectors",
+    wv: Word2VecKeyedVectors,
     vectors_path: Union[str, Path],
     vocab_path: Union[str, Path],
 ) -> None:
