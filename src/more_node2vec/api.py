@@ -97,14 +97,20 @@ class Model:
                 pickle.dump(self.as_dict(), file)
 
     @classmethod
-    def load(cls, directory: Union[str, Path]) -> Model:
+    def load(
+        cls,
+        directory: Union[str, Path],
+        *,
+        vector_name: Optional[str] = None,
+        vocab_name: Optional[str] = None,
+    ) -> Model:
         """Load the model from the given directory."""
         if isinstance(directory, str):
             directory = Path(directory)
         directory = directory.resolve()
         wv = load_tabbed_word2vec_format(
-            vectors_path=directory / cls.vector_name,
-            vocab_path=directory / cls.vocab_name,
+            vectors_path=directory.joinpath(vector_name or cls.vector_name),
+            vocab_path=directory.joinpath(vocab_name or cls.vocab_name),
         )
         return Model(wv=wv)
 
