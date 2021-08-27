@@ -7,6 +7,7 @@ from __future__ import annotations
 import csv
 import datetime
 import gzip
+import pickle
 from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
@@ -40,6 +41,7 @@ class Model:
 
     vector_name: ClassVar[str] = "embeddings.tsv.gz"
     vocab_name: ClassVar[str] = "vocab.tsv.gz"
+    dict_name: ClassVar[str] = "embeddings.pkl"
 
     wv: Word2VecKeyedVectors
 
@@ -71,7 +73,7 @@ class Model:
         """Get the model from a :class:`nodevectors.Node2Vec` instance."""
         return Model(wv=node2vec.model.wv)
 
-    def save(self, directory: Union[str, Path]) -> None:
+    def save(self, directory: Union[str, Path], save_dict: bool = False) -> None:
         """Save the model to the given directory."""
         if isinstance(directory, str):
             directory = Path(directory)
@@ -82,6 +84,9 @@ class Model:
             vectors_path=directory / self.vector_name,
             vocab_path=directory / self.vocab_name,
         )
+        if save_dict:
+            with directory.joinpath(self.dict_name).open("wb") as file:
+                pickle.dump(self.as_dict(), file)
 
     @classmethod
     def load(cls, directory: Union[str, Path]) -> Model:
