@@ -32,35 +32,16 @@
     </a>
 </p>
 
-Utilities for node2vec and gensim
-
-## 💪 Getting Started
-
-> TODO show in a very small amount of space the **MOST** useful thing your package can do.
-Make it as short as possible! You have an entire set of docs for later.
-
-### Command Line Interface
-
-The more_node2vec command line tool is automatically installed. It can
-be used from the shell with the `--help` flag to show all subcommands:
-
-```shell
-$ more_node2vec --help
-```
-
-> TODO show the most useful thing the CLI does! The CLI will have documentation auto-generated
-by `sphinx`.
+Utilities for node2vec and gensim.
 
 ## 🚀 Installation
 
-<!-- Uncomment this section after your first ``tox -e finish``
 The most recent release can be installed from
 [PyPI](https://pypi.org/project/more_node2vec/) with:
 
 ```bash
 $ pip install more_node2vec
 ```
--->
 
 The most recent code and data can be installed directly from GitHub with:
 
