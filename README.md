@@ -27,6 +27,9 @@
     <a href='https://more_node2vec.readthedocs.io/en/latest/?badge=latest'>
         <img src='https://readthedocs.org/projects/more_node2vec/badge/?version=latest' alt='Documentation Status' />
     </a>
+    <a href="https://zenodo.org/badge/latestdoi/400463203">
+        <img src="https://zenodo.org/badge/400463203.svg" alt="DOI">
+    </a>
     <a href='https://github.com/psf/black'>
         <img src='https://img.shields.io/badge/code%20style-black-000000.svg' alt='Code style: black' />
     </a>
