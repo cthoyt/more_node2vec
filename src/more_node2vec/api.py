@@ -20,6 +20,7 @@ import pandas as pd
 from gensim.models.keyedvectors import Vocab, Word2VecKeyedVectors
 from nodevectors import Node2Vec
 from sklearn.base import BaseEstimator
+from sklearn.decomposition import PCA
 
 __all__ = [
     "echo",
@@ -67,6 +68,10 @@ class Model:
     def as_dict(self) -> dict[str, np.ndarray]:
         """Get the vectors as a dictionary keyed by the vocabulary."""
         return dict(zip(self.wv.vocab, self.wv.vectors))
+
+    def as_df(self) -> pd.DataFrame:
+        """Get the vectors as a pandas dataframe."""
+        return pd.DataFrame(self.wv.vectors, index=self.wv.vocab)
 
     @staticmethod
     def from_node2vec(node2vec: Node2Vec) -> Model:
@@ -131,6 +136,45 @@ class Model:
         """Return a reduced version of the vectors in a dataframe and the scikit-learn estimator."""
         estimator, x = self.reduce(n_components=n_components, reducer=reducer)
         return estimator, pd.DataFrame(x, index=self.wv.vocab)
+
+    def plot_pca(self):
+        """Plot a PCA scree plot and a 2D PCA view on the embeddings."""
+        return plot_pca(self.as_df())
+
+
+def plot_pca(df: pd.DataFrame):
+    """Plot a PCA scree plot and a 2D PCA view on the embeddings."""
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+
+    fig, (lax, rax) = plt.subplots(1, 2, figsize=(10, 4))
+
+    # Calculating scree plot
+    pca_full = PCA()
+    pca_full.fit(df)
+    y = np.cumsum(pca_full.explained_variance_ratio_)
+    x = np.arange(y.shape[0])
+    sns.lineplot(x=x, y=y, ax=lax)
+    lax.axhline(0.80, linestyle="--", color="red")
+    lax.axhline(0.90, linestyle="--", color="goldenrod")
+    lax.axhline(0.95, linestyle="--", color="green")
+    lax.set_title("PCA Scree Plot")
+    lax.set_xlabel("Number Components")
+    lax.set_ylabel("Cumulative Explained Variance")
+
+    pca_2d = PCA(2)
+    transformed_df = pd.DataFrame(
+        pca_2d.fit_transform(df),
+        columns=["PC1", "PC2"],
+    )
+    sns.scatterplot(
+        data=transformed_df,
+        x="PC1",
+        y="PC2",
+        ax=rax,
+    )
+    rax.set_title("PCA 2D Reduction")
+    return fig, (lax, rax)
 
 
 def load_tabbed_word2vec_format(
