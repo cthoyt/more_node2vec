@@ -337,11 +337,11 @@ def get_reducer_cls(model: Union[None, str, Type[BaseEstimator]], **kwargs):
     return Reducer, kwargs
 
 
-def fit_model(graph: nx.Graph) -> Model:
+def fit_model(graph: nx.Graph, **kwargs) -> Model:
     """Fit a node2vec model on the graph and wrap it."""
     # if you're on gensim 4.0.0 +, they renamed the size
-    node2vec = Node2Vec(
-        n_components=64,
+    default_params = dict(
+        n_components=32,
         return_weight=2.3,  # from SEffNet
         neighbor_weight=1.9,  # from SEffNet
         walklen=8,  # from SEffNet
@@ -357,6 +357,10 @@ def fit_model(graph: nx.Graph) -> Model:
         verbose=True,
         keep_walks=False,
     )
+    default_params.update(kwargs)
+
+    echo("instantiating model")
+    node2vec = Node2Vec(**default_params)
 
     echo("fitting model")
     node2vec.fit(graph)
