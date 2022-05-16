@@ -102,6 +102,22 @@ class Model:
                 pickle.dump(self.as_dict(), file)
 
     @classmethod
+    def is_loadable(
+        cls,
+        directory: Union[str, Path],
+        *,
+        vector_name: Optional[str] = None,
+        vocab_name: Optional[str] = None,
+    ) -> bool:
+        """Check if a model is loadable from the given directory."""
+        if isinstance(directory, str):
+            directory = Path(directory)
+        directory = directory.resolve()
+        return directory.joinpath(vector_name or cls.vector_name).exists() and directory.joinpath(
+            vocab_name or cls.vocab_name
+        )
+
+    @classmethod
     def load(
         cls,
         directory: Union[str, Path],
