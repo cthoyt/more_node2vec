@@ -73,10 +73,10 @@ class Model:
         """Get the vectors as a pandas dataframe."""
         return pd.DataFrame(self.wv.vectors, index=self.wv.vocab)
 
-    @staticmethod
-    def from_node2vec(node2vec: Node2Vec) -> Model:
+    @classmethod
+    def from_node2vec(cls, node2vec: Node2Vec) -> Model:
         """Get the model from a :class:`nodevectors.Node2Vec` instance."""
-        return Model(wv=node2vec.model.wv)
+        return cls(wv=node2vec.model.wv)
 
     def save(
         self,
